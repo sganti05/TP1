@@ -71,8 +71,8 @@ public class ControllerFirstAdmin {
 	 * 
 	 * <p> Description: Validates the username according to the following rules:
 	 * - Length: 4-16 characters
-	 * - Must start with alphanumeric character
-	 * - Can contain letters, numbers, and special characters (@, -, _, .)
+	 * - Must start with a letter (alphabet character)
+	 * - Can contain letters, numbers, and special characters (-, _, .)
 	 * - No consecutive special characters
 	 * - Cannot end with a special character
 	 * </p>
@@ -86,27 +86,27 @@ public class ControllerFirstAdmin {
 			return false;
 		}
 
-		// Check if username starts with alphanumeric character
-		if (!Character.isLetterOrDigit(adminUsername.charAt(0))) {
-			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username must start with a letter or number.");
+		// Check if username starts with a letter (not a number)
+		if (!Character.isLetter(adminUsername.charAt(0))) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username must start with a letter.");
 			return false;
 		}
 
 		// Check if username ends with a special character
 		char lastChar = adminUsername.charAt(adminUsername.length() - 1);
-		if (lastChar == '@' || lastChar == '-' || lastChar == '_' || lastChar == '.') {
+		if (lastChar == '-' || lastChar == '_' || lastChar == '.') {
 			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username cannot end with a special character.");
 			return false;
 		}
 
-		// Check if username contains only allowed characters (letters, numbers, @, -, _, .)
-		if (!adminUsername.matches("^[a-zA-Z0-9@\\-_.]+$")) {
-			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username can only contain letters, numbers, @, -, _, and .");
+		// Check if username contains only allowed characters (letters, numbers, -, _, .)
+		if (!adminUsername.matches("^[a-zA-Z0-9\\-_.]+$")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username can only contain letters, numbers, -, _, and .");
 			return false;
 		}
 
 		// Check for consecutive special characters
-		if (adminUsername.matches(".*[@\\-_.]{2,}.*")) {
+		if (adminUsername.matches(".*[\\-_.]{2,}.*")) {
 			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username cannot contain consecutive special characters.");
 			return false;
 		}
