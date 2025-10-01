@@ -66,61 +66,107 @@ public class ControllerFirstAdmin {
 	}
 	
 	
-	// Method to validate the username
-	// Validate username
+	/**********
+	 * <p> Method: validateAdminUsername() </p>
+	 * 
+	 * <p> Description: Validates the username according to the following rules:
+	 * - Length: 4-16 characters
+	 * - Must start with alphanumeric character
+	 * - Can contain letters, numbers, and special characters (@, -, _, .)
+	 * - No consecutive special characters
+	 * - Cannot end with a special character
+	 * </p>
+	 * 
+	 * @return true if username is valid, false otherwise
+	 */
 	protected static boolean validateAdminUsername() {
-	    // Regex: must have at least one uppercase letter, one number, and one of @ - _ . as a special character
-	    // Special characters are restricted to: @, -, _, and .
-	    String regex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[@\\-_\\.]).{8,}$"; 
-	    String usernameRegex = "^[a-zA-Z0-9].{7,}$"; // Start with alphanumeric and ensure length >= 8
+		// Check if username is between 4-16 characters
+		if (adminUsername.length() < 4 || adminUsername.length() > 16) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username must be 4-16 characters long.");
+			return false;
+		}
 
-	    // Check if username starts with alphanumeric character and is at least 8 characters long
-	    if (!adminUsername.matches(usernameRegex)) {
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username must start with alphanumeric and be at least 8 characters.");
-	        return false;
-	    }
+		// Check if username starts with alphanumeric character
+		if (!Character.isLetterOrDigit(adminUsername.charAt(0))) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username must start with a letter or number.");
+			return false;
+		}
 
-	    // Check if username matches the strong username pattern
-	    if (!adminUsername.matches(regex)) {
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username must contain a capital letter, number, and special character (@, -, _, .).");
-	        return false;
-	    }
+		// Check if username ends with a special character
+		char lastChar = adminUsername.charAt(adminUsername.length() - 1);
+		if (lastChar == '@' || lastChar == '-' || lastChar == '_' || lastChar == '.') {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username cannot end with a special character.");
+			return false;
+		}
 
-	    // Check for consecutive special characters (e.g., @@, --, etc.)
-	    if (adminUsername.matches(".*[@\\-_\\.]{2,}.*")) {
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username cannot contain consecutive special characters.");
-	        return false;
-	    }
-	    return true;
+		// Check if username contains only allowed characters (letters, numbers, @, -, _, .)
+		if (!adminUsername.matches("^[a-zA-Z0-9@\\-_.]+$")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username can only contain letters, numbers, @, -, _, and .");
+			return false;
+		}
+
+		// Check for consecutive special characters
+		if (adminUsername.matches(".*[@\\-_.]{2,}.*")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Username cannot contain consecutive special characters.");
+			return false;
+		}
+
+		return true;
 	}
 
 
-	// Method to validate the password
-	// Validate password
+	/**********
+	 * <p> Method: validateAdminPassword() </p>
+	 * 
+	 * <p> Description: Validates the password according to the following rules:
+	 * - Length: 8-32 characters
+	 * - Must start with alphanumeric character
+	 * - Must contain at least one uppercase letter
+	 * - Must contain at least one lowercase letter
+	 * - Must contain at least one number
+	 * - Must contain at least one special character
+	 * </p>
+	 * 
+	 * @return true if password is valid, false otherwise
+	 */
 	protected static boolean validateAdminPassword() {
-	    // Regex: password must have at least one uppercase letter, one number, and one special character
-	    // Must be between 8 and 32 characters
-	    String passwordRegex = "^(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()\\-_=+`~\\[\\]{}\\\\|;:'\",.<>?/]).{8,32}$";
-	    String passwordStartRegex = "^[a-zA-Z0-9].{7,31}$"; // Must start with alphanumeric and ensure length is between 8-32 characters
+		// Check if password is between 8-32 characters
+		if (adminPassword1.length() < 8 || adminPassword1.length() > 32) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must be 8-32 characters long.");
+			return false;
+		}
 
-	    // Check if password starts with alphanumeric and has correct length (8-32)
-	    if (!adminPassword1.matches(passwordStartRegex)) {
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must start with alphanumeric and be between 8 and 32 characters.");
-	        return false;
-	    }
+		// Check if password starts with alphanumeric character
+		if (!Character.isLetterOrDigit(adminPassword1.charAt(0))) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must start with a letter or number.");
+			return false;
+		}
 
-	    // Check if password matches the strong password pattern
-	    if (!adminPassword1.matches(passwordRegex)) {
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must contain a capital letter, number, and special character.");
-	        return false;
-	    }
+		// Check for at least one uppercase letter
+		if (!adminPassword1.matches(".*[A-Z].*")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must contain at least one uppercase letter.");
+			return false;
+		}
 
-	    // Check for consecutive special characters (e.g., !!, --, etc.)
-	    if (adminPassword1.matches(".*[!@#$%^&*()\\-_=+`~\\[\\]{}\\\\|;:'\",.<>?/]{2,}.*")) {
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password cannot contain consecutive special characters.");
-	        return false;
-	    }
-	    return true;
+		// Check for at least one lowercase letter
+		if (!adminPassword1.matches(".*[a-z].*")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must contain at least one lowercase letter.");
+			return false;
+		}
+
+		// Check for at least one number
+		if (!adminPassword1.matches(".*[0-9].*")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must contain at least one number.");
+			return false;
+		}
+
+		// Check for at least one special character
+		if (!adminPassword1.matches(".*[!@#$%^&*()\\-_=+`~\\[\\]{}\\\\|;:'\",.<>?/].*")) {
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("Password must contain at least one special character.");
+			return false;
+		}
+
+		return true;
 	}
 
 
@@ -133,30 +179,30 @@ public class ControllerFirstAdmin {
 	 * 
 	 */
 	protected static void doSetupAdmin(Stage ps, int r) {
-	    // Make sure the two passwords are the same
-	    if (adminPassword1.compareTo(adminPassword2) == 0) {
-	        // Validate username and password
-	        if (validateAdminUsername() && validateAdminPassword()) {
-	            // Create the user and proceed
-	            User user = new User(adminUsername, adminPassword1, "", "", "", "", "", true, false, false);
-	            try {
-	                // Create a new User object with admin role and register in the database
-	                theDatabase.register(user);
-	            } catch (SQLException e) {
-	                System.err.println("*** ERROR *** Database error trying to register a user: " + e.getMessage());
-	                e.printStackTrace();
-	                System.exit(0);
-	            }
+		// Make sure the two passwords are the same
+		if (adminPassword1.compareTo(adminPassword2) == 0) {
+			// Validate username and password
+			if (validateAdminUsername() && validateAdminPassword()) {
+				// Create the user and proceed
+				User user = new User(adminUsername, adminPassword1, "", "", "", "", "", true, false, false);
+				try {
+					// Create a new User object with admin role and register in the database
+					theDatabase.register(user);
+				} catch (SQLException e) {
+					System.err.println("*** ERROR *** Database error trying to register a user: " + e.getMessage());
+					e.printStackTrace();
+					System.exit(0);
+				}
 
-	            // User was established in the database, so navigate to the User Update Page
-	            guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewFirstAdmin.theStage, user);
-	        }
-	    } else {
-	        // The passwords do not match, clear the passwords and display a warning
-	        ViewFirstAdmin.text_AdminPassword1.setText("");
-	        ViewFirstAdmin.text_AdminPassword2.setText("");
-	        ViewFirstAdmin.label_PasswordsDoNotMatch.setText("The two passwords must match. Please try again!");
-	    }
+				// User was established in the database, so navigate to the User Update Page
+				guiUserUpdate.ViewUserUpdate.displayUserUpdate(ViewFirstAdmin.theStage, user);
+			}
+		} else {
+			// The passwords do not match, clear the passwords and display a warning
+			ViewFirstAdmin.text_AdminPassword1.setText("");
+			ViewFirstAdmin.text_AdminPassword2.setText("");
+			ViewFirstAdmin.label_PasswordsDoNotMatch.setText("The two passwords must match. Please try again!");
+		}
 	}
 
 
@@ -175,4 +221,3 @@ public class ControllerFirstAdmin {
 		System.exit(0);
 	}	
 }
-
