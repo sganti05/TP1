@@ -312,18 +312,27 @@ public class ViewUserUpdate {
         	else label_CurrentPreferredFirstName.setText(newName);
      		});
         
-        // Email Address
+        // Email Address - WITH VALIDATION
         setupLabelUI(label_EmailAddress, "Arial", 18, 190, Pos.BASELINE_RIGHT, 5, 400);
         setupLabelUI(label_CurrentEmailAddress, "Arial", 18, 260, Pos.BASELINE_LEFT, 200, 400);
         setupButtonUI(button_UpdateEmailAddress, "Dialog", 18, 275, Pos.CENTER, 500, 393);
-        button_UpdateEmailAddress.setOnAction((event) -> {result = dialogUpdateEmailAddresss.showAndWait();
-    		result.ifPresent(name -> theDatabase.updateEmailAddress(theUser.getUserName(), result.get()));
-    		theDatabase.getUserAccountDetails(theUser.getUserName());
-    		String newEmail = theDatabase.getCurrentEmailAddress();
-           	theUser.setEmailAddress(newEmail);
-        	if (newEmail == null || newEmail.length() < 1)label_CurrentEmailAddress.setText("<none>");
-        	else label_CurrentEmailAddress.setText(newEmail);
- 			});
+        button_UpdateEmailAddress.setOnAction((event) -> {
+            result = dialogUpdateEmailAddresss.showAndWait();
+            result.ifPresent(email -> {
+                // Validate the email before updating
+                if (ControllerUserUpdate.validateEmail(email)) {
+                    theDatabase.updateEmailAddress(theUser.getUserName(), email);
+                    theDatabase.getUserAccountDetails(theUser.getUserName());
+                    String newEmail = theDatabase.getCurrentEmailAddress();
+                    theUser.setEmailAddress(newEmail);
+                    if (newEmail == null || newEmail.length() < 1)
+                        label_CurrentEmailAddress.setText("<none>");
+                    else 
+                        label_CurrentEmailAddress.setText(newEmail);
+                }
+                // If validation fails, the error is shown by validateEmail() and we don't update
+            });
+        });
         
         // Set up the button to proceed to this user's home page
         setupButtonUI(button_ProceedToUserHomePage, "Dialog", 18, 300, 
